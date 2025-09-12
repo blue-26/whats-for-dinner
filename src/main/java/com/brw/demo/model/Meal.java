@@ -1,5 +1,6 @@
 package com.brw.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -17,9 +18,11 @@ public class Meal {
     private DayTheme dayTheme;
 
     @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Ingredient> ingredients;
 
     @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Instruction> instructions;
 
     // Getters and setters

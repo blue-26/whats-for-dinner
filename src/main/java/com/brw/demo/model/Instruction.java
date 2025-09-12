@@ -1,5 +1,6 @@
 package com.brw.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,6 +14,7 @@ public class Instruction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meal_id")
+    @JsonBackReference
     private Meal meal;
 
     // Getters and setters
