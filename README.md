@@ -2,6 +2,6 @@ TODO
 - security scanning
 - secrets manager
 - database
-- code deploy?
-- lambda?
-- api integration?
+- code deploy
+- lambda
+- api integration
