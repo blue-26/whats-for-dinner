@@ -48,14 +48,27 @@ jobs:
         aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK_DEFINITION }} > task-def.json
 
 
+
     - name: Extract task definition
       run: |
         jq '.taskDefinition' task-def.json > task-def-input.json
 
+    - name: Clean task definition for registration
+      run: |
+        jq 'del(
+          .taskDefinitionArn,
+          .revision,
+          .status,
+          .requiresAttributes,
+          .compatibilities,
+          .registeredAt,
+          .registeredBy
+        )' task-def-input.json > task-def-clean.json
+
     - name: Update task definition with new image
       run: |
         IMAGE="${{ secrets.DOCKER_USERNAME }}/whats-for-dinner:latest"
-        jq --arg IMAGE "$IMAGE" '.containerDefinitions[0].image = $IMAGE' task-def-input.json > new-task-def.json
+        jq --arg IMAGE "$IMAGE" '.containerDefinitions[0].image = $IMAGE' task-def-clean.json > new-task-def.json
 
     - name: Register new task definition
       run: |
