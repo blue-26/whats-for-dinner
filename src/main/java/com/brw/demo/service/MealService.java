@@ -61,23 +61,12 @@ public class MealService {
         parmesan.setMeal(spaghetti); // Link ingredient to the meal
         ingredients.add(parmesan);
 
-        // 3. Create the list of Instructions
-        List<Instruction> instructions = new ArrayList<>();
-
-        Instruction step1 = new Instruction();
-        step1.setStep("1. Cook pasta");
-        step1.setMeal(spaghetti); // Link instruction to the meal
-        instructions.add(step1);
-
-        Instruction step2 = new Instruction();
-        step2.setStep("2. Heat sauce");
-        step2.setMeal(spaghetti); // Link instruction to the meal
-        instructions.add(step2);
-
-        Instruction step3 = new Instruction();
-        step3.setStep("3. Serve with parmesan");
-        step3.setMeal(spaghetti); // Link instruction to the meal
-        instructions.add(step3);
+        // 3. Create the Instructions
+        
+        Instruction instructions = new Instruction();
+        instructions.setStep("1. Cook pasta. 2. Heat sauce. 3. Serve with parmesan." );
+        instructions.setMeal(spaghetti); // Link instruction to the meal
+       
 
         // 4. Set the lists on the Meal object
         spaghetti.setIngredients(ingredients);
