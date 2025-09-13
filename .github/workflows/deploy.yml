@@ -47,14 +47,17 @@ jobs:
       run: |
         aws ecs describe-task-definition --task-definition ${{ secrets.ECS_TASK_DEFINITION }} > task-def.json
 
+
+    - name: Extract task definition
+      run: |
+        jq '.taskDefinition' task-def.json > task-def-input.json
+
     - name: Update task definition with new image
-      id: update-task-def
       run: |
         IMAGE="${{ secrets.DOCKER_USERNAME }}/whats-for-dinner:latest"
-        jq --arg IMAGE "$IMAGE" '.taskDefinition.containerDefinitions[0].image = $IMAGE' task-def.json > new-task-def.json
+        jq --arg IMAGE "$IMAGE" '.containerDefinitions[0].image = $IMAGE' task-def-input.json > new-task-def.json
 
     - name: Register new task definition
-      id: register-task-def
       run: |
         NEW_TASK_DEF_ARN=$(aws ecs register-task-definition --cli-input-json file://new-task-def.json | jq -r '.taskDefinition.taskDefinitionArn')
         echo "NEW_TASK_DEF_ARN=$NEW_TASK_DEF_ARN" >> $GITHUB_ENV
