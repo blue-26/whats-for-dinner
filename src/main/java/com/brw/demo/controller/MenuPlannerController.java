@@ -1,25 +1,23 @@
 package com.brw.demo.controller;
 
-import com.brw.demo.dto.*;
+import com.brw.demo.dto.IngredientDTO;
+import com.brw.demo.dto.MealDTO;
+import com.brw.demo.service.MealService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
 public class MenuPlannerController {
 
-    // GET /api/plan
-    @GetMapping("/plan")
-    public List<DayThemeDTO> getWeeklyPlan() {
-        // TODO: Implement service call
-        return null;
-    }
+    private final MealService mealService;
 
-    // GET /api/plan/{dayOfWeek}/meals
-    @GetMapping("/plan/{dayOfWeek}/meals")
-    public List<MealDTO> getMealsForDay(@PathVariable String dayOfWeek) {
-        // TODO: Implement service call
-        return null;
+    public MenuPlannerController(MealService mealService) {
+        this.mealService = mealService;
     }
 
     // POST /api/meals
@@ -44,15 +42,29 @@ public class MenuPlannerController {
 
     // GET /api/meals/{mealId}/ingredients
     @GetMapping("/meals/{mealId}/ingredients")
-    public List<IngredientDTO> getIngredientsForMeal(@PathVariable Long mealId) {
-        // TODO: Implement service call
-        return null;
+    public ResponseEntity<List<IngredientDTO>> getIngredientsForMeal(@PathVariable Long mealId) {
+        return mealService.findById(mealId)
+                .map(meal -> {
+                    List<IngredientDTO> ingredientDTOs = meal.getIngredients().stream()
+                            .map(ingredient -> {
+                                IngredientDTO dto = new IngredientDTO();
+                                dto.setId(ingredient.getId());
+                                dto.setName(ingredient.getName());
+                                dto.setQuantity(ingredient.getQuantity());
+                                return dto;
+                            })
+                            .collect(Collectors.toList());
+                    return ResponseEntity.ok(ingredientDTOs);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // GET /api/meals/{mealId}/instructions
     @GetMapping("/meals/{mealId}/instructions")
-    public List<InstructionDTO> getInstructionsForMeal(@PathVariable Long mealId) {
-        // TODO: Implement service call
-        return null;
+    public ResponseEntity<String> getInstructionsForMeal(@PathVariable Long mealId) {
+        return mealService.findById(mealId)
+                .map(meal -> ResponseEntity.ok(meal.getInstructions()))
+                .orElse(ResponseEntity.notFound().build());
     }
 }
+

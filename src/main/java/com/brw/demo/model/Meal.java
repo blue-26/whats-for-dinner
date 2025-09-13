@@ -23,9 +23,8 @@ public class Meal {
     @JsonManagedReference
     private List<Ingredient> ingredients;
 
-    @OneToOne(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private Instruction instructions;
+    @Column(length = 2000)
+    private String instructions;
 
     // Getters and setters
     public Long getId() { return id; }
@@ -36,6 +35,6 @@ public class Meal {
     public void setDayTheme(DayTheme dayTheme) { this.dayTheme = dayTheme; }
     public List<Ingredient> getIngredients() { return ingredients; }
     public void setIngredients(List<Ingredient> ingredients) { this.ingredients = ingredients; }
-    public Instruction getInstructions() { return instructions; }
-    public void setInstructions(Instruction instructions2) { this.instructions = instructions2; }
+    public String getInstructions() { return instructions; }
+    public void setInstructions(String instructions) { this.instructions = instructions; }
 }
