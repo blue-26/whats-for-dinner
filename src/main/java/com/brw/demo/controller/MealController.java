@@ -55,9 +55,13 @@ public class MealController {
         html.append("<h1><a href='/api/themes' style='color:#fff;text-decoration:none;'>What's For Dinner</a></h1><main>");
         html.append("<div class='card'><h2>").append(meal.getName()).append("</h2>");
         html.append("<h3>Ingredients</h3><ul>");
-        meal.getIngredients().forEach((ingredient, amount) -> {
-            html.append("<li>").append(ingredient).append(": ").append(amount).append("</li>");
-        });
+        for (var ingredient : meal.getIngredients()) {
+            html.append("<li>")
+                .append(ingredient.getName())
+                .append(": ")
+                .append(ingredient.getQuantity())
+                .append("</li>");
+        }
         html.append("</ul><h3>Instructions</h3><p>").append(meal.getInstructions()).append("</p></div>");
         html.append("<p style='margin-top:2em;'><a href='/api/themes/" + meal.getDayTheme().getName() + "'>&larr; Back to "+ meal.getDayTheme().getName() +"</a></p>");
         html.append("</main></body></html>");
