@@ -3,6 +3,7 @@ package com.brw.demo.controller;
 import com.brw.demo.dto.GroceryListItemDTO;
 import com.brw.demo.model.DayTheme;
 import com.brw.demo.model.Meal;
+import com.brw.demo.service.DayThemeService;
 import com.brw.demo.service.MealService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +14,11 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/grocery-list")
 public class GroceryListController {
+    private final DayThemeService dayThemeService;
     private final MealService mealService;
 
-    public GroceryListController(MealService mealService) {
+    public GroceryListController(DayThemeService dayThemeService, MealService mealService) {
+        this.dayThemeService = dayThemeService;
         this.mealService = mealService;
     }
 
@@ -77,7 +80,7 @@ public class GroceryListController {
         List<String> daysOfWeek = Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
         Map<String, Integer> ingredientMap = new HashMap<>();
         for (String day : daysOfWeek) {
-            Optional<DayTheme> themeOpt = mealService.getDayThemeRepository().findByName(day);
+            Optional<DayTheme> themeOpt = dayThemeService.findByName(day);
             if (themeOpt.isPresent()) {
                 DayTheme theme = themeOpt.get();
                 List<Meal> meals = theme.getMeals();
