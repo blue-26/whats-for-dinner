@@ -43,8 +43,9 @@ jobs:
     - name: SonarCloud Scan
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.2.0.4988:sonar \
-        -Dsonar.projectKey=blue-26_whats-for-dinner \
+      run: >
+        ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.2.0.4988:sonar
+        -Dsonar.projectKey=blue-26_whats-for-dinner
         -Dsonar.organization=blue-26
 
     - name: Log in to Docker Hub
