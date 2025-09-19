@@ -5,6 +5,7 @@ import com.brw.demo.model.DayTheme;
 import com.brw.demo.model.Meal;
 import com.brw.demo.service.DayThemeService;
 import com.brw.demo.service.MealService;
+import com.brw.demo.util.HtmlResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,10 +74,14 @@ public class GroceryListController {
         )
     );
 
+    private boolean isBrowser(HttpServletRequest request) {
+        String userAgent = request.getHeader("User-Agent");
+        return userAgent != null && userAgent.toLowerCase().contains("mozilla");
+    }
+
     // GET /api/grocery-list/weekly
     @GetMapping("/weekly")
     public ResponseEntity<?> getWeeklyGroceryList(HttpServletRequest request) {
-        // Days in order
         List<String> daysOfWeek = Arrays.asList("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
         Map<String, Integer> ingredientMap = new HashMap<>();
         for (String day : daysOfWeek) {
@@ -100,12 +105,11 @@ public class GroceryListController {
         List<GroceryListItemDTO> groceryList = ingredientMap.entrySet().stream()
                 .map(e -> new GroceryListItemDTO(e.getKey(), String.valueOf(e.getValue())))
                 .collect(Collectors.toList());
-        if (request.getHeader("User-Agent") != null && request.getHeader("User-Agent").toLowerCase().contains("mozilla")) {
+        if (isBrowser(request)) {
             StringBuilder html = new StringBuilder();
-            html.append("<!DOCTYPE html><html><head><title>Weekly Grocery List</title>");
-            html.append("<style>body{font-family:sans-serif;background:#f8f9fa;margin:0;padding:0;}h1{background:#343a40;color:#fff;padding:1em 2em;margin:0;}main{padding:2em;}table{width:100%;border-collapse:collapse;margin-top:1em;}th,td{padding:0.75em 1em;border-bottom:1px solid #dee2e6;}tr:hover{background:#f1f3f5;}a{color:#007bff;text-decoration:none;}a:hover{text-decoration:underline;} .card{background:#fff;border-radius:8px;box-shadow:0 2px 8px #0001;padding:1.5em;margin-bottom:1em;} .cat{font-weight:bold;background:#e9ecef;}</style>");
-            html.append("</head><body>");
-            html.append("<h1><a href='/api/themes/menu-plan' style='color:#fff;text-decoration:none;'>Weekly Menu Plan</a></h1><main>");
+            html.append(HtmlResponseUtil.htmlHeader("Weekly Grocery List"));
+            html.append(HtmlResponseUtil.buttonGroup());
+            html.append(HtmlResponseUtil.breadcrumb("Grocery List"));
             html.append("<h2>Weekly Staples</h2>");
             html.append("<table><thead><tr><th>Category</th><th>Item</th><th>Quantity</th></tr></thead><tbody>");
             for (var entry : STAPLES.entrySet()) {
@@ -122,10 +126,9 @@ public class GroceryListController {
             }
             html.append("</tbody></table>");
             html.append("<p style='margin-top:2em;'><a href='/api/themes/menu-plan'>&larr; Back to Menu Plan</a></p>");
-            html.append("</main></body></html>");
+            html.append(HtmlResponseUtil.htmlFooter());
             return ResponseEntity.ok().header("Content-Type", "text/html").body(html.toString());
         }
-        // For JSON, combine staples and menu plan ingredients
         List<GroceryListItemDTO> allItems = new ArrayList<>();
         STAPLES.values().forEach(allItems::addAll);
         allItems.addAll(groceryList);

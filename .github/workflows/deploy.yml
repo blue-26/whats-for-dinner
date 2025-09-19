@@ -47,6 +47,7 @@ jobs:
         ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.2.0.4988:sonar
         -Dsonar.projectKey=blue-26_whats-for-dinner
         -Dsonar.organization=blue-26
+        -Dsonar.exclusions=**/dto/**,**/util/**,**/model/**
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
