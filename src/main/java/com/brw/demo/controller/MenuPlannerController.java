@@ -4,6 +4,7 @@ import com.brw.demo.dto.IngredientDTO;
 import com.brw.demo.dto.MealDTO;
 import com.brw.demo.service.MealService;
 import com.brw.demo.util.HtmlResponseUtil;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,7 +93,10 @@ public class MenuPlannerController {
                         html.append(HtmlResponseUtil.htmlFooter());
                         return ResponseEntity.ok().header("Content-Type", "text/html").body(html.toString());
                     }
-                    return ResponseEntity.ok(meal.getInstructions());
+                    // FIX: Return JSON content type for API clients
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body("\"" + meal.getInstructions() + "\"");
                 })
                 .orElse(ResponseEntity.notFound().build());
     }

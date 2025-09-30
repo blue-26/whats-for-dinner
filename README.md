@@ -19,5 +19,6 @@ TODO
 - profiles, environments (qa, prod)
 - POST options to add new recipes
   - authorizations
+- separate api to collect recipes
 
   
